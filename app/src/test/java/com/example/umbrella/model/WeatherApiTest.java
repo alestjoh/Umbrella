@@ -25,7 +25,7 @@ public class WeatherApiTest implements Callback<WeatherData> {
 
         WeatherApi api = retrofit.create(WeatherApi.class);
 
-        api.getData(85282).enqueue(this);
+        api.getData(85282, "nope.").enqueue(this);
 
         try {
             Thread.sleep(10000);

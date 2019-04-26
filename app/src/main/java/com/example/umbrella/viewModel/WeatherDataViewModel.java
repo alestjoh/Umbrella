@@ -1,8 +1,11 @@
 package com.example.umbrella.viewModel;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+import com.example.umbrella.R;
 import com.example.umbrella.model.WeatherApi;
 import com.example.umbrella.model.WeatherData;
 
@@ -18,24 +21,26 @@ public class WeatherDataViewModel extends ViewModel {
 
     private WeatherApi api = null;
 
+    private MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
+
     private void initRetrofit() {
         Log.d(TAG, "Initializing Retrofit...");
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/data/2.5/")
+                .baseUrl("https://api.openweathermap.org/data/2.5/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         api = retrofit.create(WeatherApi.class);
     }
 
-    public void getWeatherData(int zip) {
+    public void getWeatherData(int zip, String key) {
         if (api == null) {
             initRetrofit();
         }
 
         Log.d(TAG, "Calling api method...");
-        api.getData(zip).enqueue(new Callback<WeatherData>() {
+        api.getData(zip, key).enqueue(new Callback<WeatherData>() {
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 Log.d(TAG, "Got a valid response");
@@ -43,7 +48,7 @@ public class WeatherDataViewModel extends ViewModel {
                     Log.e(TAG, "Response body was null");
                     Log.e(TAG, response.code() + " " + response.message());
                 } else {
-
+                    weatherData.postValue(response.body());
                 }
             }
 
@@ -52,5 +57,9 @@ public class WeatherDataViewModel extends ViewModel {
                 Log.e(TAG, "Call failed: " + t.getMessage());
             }
         });
+    }
+
+    public LiveData<WeatherData> getWeatherData() {
+        return weatherData;
     }
 }

@@ -11,6 +11,14 @@ public class WeatherData {
     public class WeatherItem {
         public class TemperatureData {
             public float temp;
+
+            public int getTempF() {
+                return (int)(1.8 * getTempC()) + 32;
+            }
+
+            public int getTempC() {
+                return (int)(temp - 273.15);
+            }
         }
 
         public class WeatherType {

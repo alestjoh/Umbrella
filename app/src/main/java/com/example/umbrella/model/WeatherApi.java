@@ -4,9 +4,8 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Query;
-
+//zip units appid
 public interface WeatherApi {
-    @Headers("user-key: b414d76d1f5dfdc063dd2a95ef460736")
     @GET("forecast")
-    Call<WeatherData> getData(@Query("q") int zip);
+    Call<WeatherData> getData(@Query("zip") int zip, @Query("appid") String key);
 }

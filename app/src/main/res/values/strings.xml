@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Umbrella</string>
     <string name="degree_sign">°</string>
+    <string name="weather_api_key">b414d76d1f5dfdc063dd2a95ef460736</string>
 </resources>
