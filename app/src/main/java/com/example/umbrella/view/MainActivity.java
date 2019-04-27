@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     TextView description;
     @BindView(R.id.constraintLayout_currentWeather)
     ConstraintLayout currentWeatherLayout;
+    @BindView(R.id.recycler_view_main)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 currentWeatherLayout.setBackgroundColor(
                         getResources().getColor(R.color.colorWarm));
             }
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(new WeatherRecyclerAdapter(this, weatherData));
         });
         viewModel.getWeatherData(85282, getString(R.string.weather_api_key));
     }
