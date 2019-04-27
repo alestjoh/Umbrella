@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Temp: " + weatherData.list.get(0).main.getTempF());
             Log.d(TAG, "Number of items: " + weatherData.list.size());
 
-            temp.setText(weatherData.list.get(0).main.getTempF() + getString(R.string.degree_sign));
+            temp.setText(getTemperatureText(weatherData));
             cityName.setText(weatherData.city.name);
             description.setText(weatherData.list.get(0).weather.get(0).main);
 
@@ -54,5 +54,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         viewModel.getWeatherData(85282, getString(R.string.weather_api_key));
+    }
+
+    private String getTemperatureText(WeatherData weatherData) {
+
+        return weatherData.list.get(0).main.getTempF() + getString(R.string.degree_sign);
     }
 }
