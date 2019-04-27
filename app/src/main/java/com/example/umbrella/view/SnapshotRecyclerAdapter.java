@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.umbrella.R;
 import com.example.umbrella.model.WeatherData;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,12 +21,13 @@ public class SnapshotRecyclerAdapter extends
         RecyclerView.Adapter<SnapshotRecyclerAdapter.SnapshotViewHolder> {
 
     List<WeatherData.WeatherItem> snapshots;
-    String timeFormat;
+    String timeFormat, iconUrl;
 
     public SnapshotRecyclerAdapter(List<WeatherData.WeatherItem> snapshots,
-                                   String timeFormat) {
+                                   String timeFormat, String iconUrl) {
         this.snapshots = snapshots;
         this.timeFormat = timeFormat;
+        this.iconUrl = iconUrl;
     }
 
     @NonNull
@@ -46,7 +48,8 @@ public class SnapshotRecyclerAdapter extends
 
         snapshotViewHolder.temp.setText(weatherItem.main.getTempF() + "°");
 
-
+        String iconUrl = String.format(this.iconUrl, weatherItem.weather.get(0).icon);
+        Picasso.get().load(iconUrl).into(snapshotViewHolder.icon);
     }
 
     @Override
