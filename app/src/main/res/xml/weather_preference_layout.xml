@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="zip"
+        android:title="ZIP code"
+        android:inputType="number"/>
+    <SwitchPreference
+        android:key="degree_type"
+        android:title="Use metric system?"/>
+</PreferenceScreen>
