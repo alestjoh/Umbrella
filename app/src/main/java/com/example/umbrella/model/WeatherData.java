@@ -22,7 +22,7 @@ public class WeatherData {
         }
 
         public class WeatherType {
-            public String main;
+            public String main, icon;
         }
 
         public long dt;
