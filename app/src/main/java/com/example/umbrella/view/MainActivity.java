@@ -1,6 +1,8 @@
 package com.example.umbrella.view;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     WeatherDataViewModel viewModel;
+    SharedPreferences preferences;
+    WeatherPreferencesFragment fragment = null;
 
     @BindView(R.id.tv_temp_currentWeather)
     TextView temp;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         viewModel = ViewModelProviders.of(this).get(WeatherDataViewModel.class);
         viewModel.getWeatherData().observe(this, weatherData -> {
@@ -64,19 +69,39 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(new WeatherRecyclerAdapter(this, weatherData));
         });
-        viewModel.getWeatherData(85282, getString(R.string.weather_api_key));
+
+        if (preferences.getBoolean("hasOpenedApp", false)) {
+            requestWeatherData();
+        } else {
+            openSettingsFragment();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestWeatherData();
+    }
+
+    public void requestWeatherData() {
+        int zip = Integer.parseInt(preferences.getString("zip", "85009"));
+        viewModel.getWeatherData(zip, getString(R.string.weather_api_key));
     }
 
     private String getTemperatureText(WeatherData weatherData) {
-
-        return weatherData.list.get(0).main.getTempF() + getString(R.string.degree_sign);
+        int temp = preferences.getBoolean("degree_type", false) ?
+                weatherData.list.get(0).main.getTempC() :
+                weatherData.list.get(0).main.getTempF();
+        return temp + getString(R.string.degree_sign);
     }
 
     @OnClick(R.id.btn_settings_currentWeather)
     public void openSettingsFragment() {
+        fragment = new WeatherPreferencesFragment();
+        fragment.setMainActivity(this);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_placeholder_main, new WeatherPreferencesFragment())
+                .replace(R.id.fragment_placeholder_main, fragment)
                 .addToBackStack(null)
                 .commit();
     }
