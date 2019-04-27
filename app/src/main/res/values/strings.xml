@@ -3,7 +3,7 @@
     <string name="degree_sign">°</string>
     <string name="weather_api_key">b414d76d1f5dfdc063dd2a95ef460736</string>
     <string name="weather_icon_url">http://openweathermap.org/img/w/%s.png</string>
-    <string name="time_format">hh:mm a</string>
+    <string name="time_format">h:mm a</string>
 
     <string-array name="day_names">
         <item>Today</item>

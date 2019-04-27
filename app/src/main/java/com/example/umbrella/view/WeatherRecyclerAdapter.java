@@ -12,16 +12,21 @@ import android.widget.TextView;
 
 import com.example.umbrella.R;
 import com.example.umbrella.model.WeatherData;
+import com.example.umbrella.model.WeatherData.WeatherItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class WeatherRecyclerAdapter extends
         RecyclerView.Adapter<WeatherRecyclerAdapter.WeatherViewHolder> {
 
-    private static final int NUM_SNAPSHOTS = 40,
-            ITEMS_PER_DAY = 8;
+    private static final int DAYS = 5,
+            ITEMS_PER_ROW = 4;
     private static final String TAG = WeatherRecyclerAdapter.class.getSimpleName();
+    private List<WeatherItem>[] dayLists;
     private String[] dayNames;
     private String timeFormat, iconUrl;
     private WeatherData data;
@@ -32,9 +37,35 @@ public class WeatherRecyclerAdapter extends
         dayNames = context.getResources().getStringArray(R.array.day_names);
 
         this.data = data;
-        if (data.list.size() < 40) {
-            Log.e(TAG, "The list does not have enough items in it: " + data.list.size());
+
+        initDayLists();
+    }
+
+    private void initDayLists() {
+        dayLists = new ArrayList[DAYS];
+        for (int i = 0; i < DAYS; i++) {
+            dayLists[i] = new ArrayList<>();
         }
+
+        int index = 0;
+        int curDay = getDay(new Date(data.list.get(0).dt * 1000));
+        for (WeatherItem item : data.list) {
+            int day = getDay(new Date(item.dt * 1000));
+            if (day != curDay) {
+                curDay = day;
+                index ++;
+                if (index >= DAYS) {
+                    break;
+                }
+            }
+            dayLists[index].add(item);
+        }
+    }
+
+    private static int getDay(Date date) {
+        Calendar calendar = Calendar.getInstance(Locale.US);
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_YEAR);
     }
 
     @NonNull
@@ -51,20 +82,9 @@ public class WeatherRecyclerAdapter extends
         weatherViewHolder.dayText.setText(dayNames[i]);
 
         weatherViewHolder.recyclerView.setLayoutManager(new GridLayoutManager(
-                weatherViewHolder.recyclerView.getContext(), 4));
+                weatherViewHolder.recyclerView.getContext(), ITEMS_PER_ROW));
         weatherViewHolder.recyclerView.setAdapter(new SnapshotRecyclerAdapter(
-                getItemsForDay(i), timeFormat, iconUrl));
-    }
-
-    private List<WeatherData.WeatherItem> getItemsForDay(int i) {
-        List<WeatherData.WeatherItem> list = new ArrayList<>();
-
-        int startIndex = ITEMS_PER_DAY * i;
-        for (int index = 0; index < startIndex + ITEMS_PER_DAY; index++) {
-            list.add(data.list.get(index));
-        }
-
-        return list;
+                dayLists[i], timeFormat, iconUrl));
     }
 
     @Override

@@ -44,8 +44,7 @@ public class SnapshotRecyclerAdapter extends
         WeatherData.WeatherItem weatherItem = snapshots.get(i);
 
         SimpleDateFormat timeFormat = new SimpleDateFormat(this.timeFormat, Locale.US);
-        snapshotViewHolder.time.setText(timeFormat.format(new Date(weatherItem.dt)));
-
+        snapshotViewHolder.time.setText(timeFormat.format(new Date(weatherItem.dt * 1000)));
         snapshotViewHolder.temp.setText(weatherItem.main.getTempF() + "°");
 
         String iconUrl = String.format(this.iconUrl, weatherItem.weather.get(0).icon);
