@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.umbrella.R;
@@ -15,6 +16,7 @@ import com.example.umbrella.viewModel.WeatherDataViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout currentWeatherLayout;
     @BindView(R.id.recycler_view_main)
     RecyclerView recyclerView;
+    @BindView(R.id.btn_settings_currentWeather)
+    Button settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,5 +70,14 @@ public class MainActivity extends AppCompatActivity {
     private String getTemperatureText(WeatherData weatherData) {
 
         return weatherData.list.get(0).main.getTempF() + getString(R.string.degree_sign);
+    }
+
+    @OnClick(R.id.btn_settings_currentWeather)
+    public void openSettingsFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_placeholder_main, new WeatherPreferencesFragment())
+                .addToBackStack(null)
+                .commit();
     }
 }
