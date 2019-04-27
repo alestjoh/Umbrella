@@ -1,6 +1,8 @@
 package com.example.umbrella.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,12 +30,16 @@ public class WeatherRecyclerAdapter extends
     private String[] dayNames;
     private String timeFormat, iconUrl;
     private WeatherData data;
+    private SharedPreferences preferences;
+    private int warmColor, coolColor;
 
     public WeatherRecyclerAdapter(Context context, WeatherData data) {
         timeFormat = context.getString(R.string.time_format);
         iconUrl = context.getString(R.string.weather_icon_url);
         dayNames = context.getResources().getStringArray(R.array.day_names);
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        warmColor = context.getResources().getColor(R.color.colorWarm);
+        coolColor = context.getResources().getColor(R.color.colorCool);
         this.data = data;
 
         initDayLists();
@@ -82,7 +88,7 @@ public class WeatherRecyclerAdapter extends
         weatherViewHolder.recyclerView.setLayoutManager(new GridLayoutManager(
                 weatherViewHolder.recyclerView.getContext(), ITEMS_PER_ROW));
         weatherViewHolder.recyclerView.setAdapter(new SnapshotRecyclerAdapter(
-                dayLists[i], timeFormat, iconUrl));
+                dayLists[i], timeFormat, iconUrl, preferences, warmColor, coolColor));
     }
 
     @Override
